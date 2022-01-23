@@ -1,7 +1,9 @@
 package com.example.final_project.ui.login
 
-import android.content.Intent
+import android.app.Activity
+import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +20,14 @@ import com.example.final_project.R
 import com.example.final_project.adapter.RecyclerAdapter
 import com.example.final_project.data.Database
 import com.example.final_project.data.User
-import com.example.final_project.ui.pictures.PicturesFragment
+import com.example.final_project.ui.FragmentController
+
 
 class LoginFragment : Fragment() {
 
     private lateinit var loginViewModel: LoginViewModel
+
+    private var mListener: FragmentController? = null
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -33,6 +38,21 @@ class LoginFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_login, container, false)
 
         return root
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        mListener = try {
+            activity as FragmentController
+        } catch (e: ClassCastException) {
+            throw ClassCastException(activity.toString()
+                    + " must implement FragmentController")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
@@ -51,17 +71,13 @@ class LoginFragment : Fragment() {
 
 
         loginViewModel.dataValid.observe(viewLifecycleOwner, Observer {
-            if (it)
-            {
+            if (it) {
                 errorText.text = ""
                 loginButton.isEnabled = true
                 regButton.isEnabled = true
-            }
-            else
-            {
+            } else {
 
-                if (loginViewModel.error != null )
-                {
+                if (loginViewModel.error != null) {
                     errorText.text = loginViewModel.error!!.value
                     loginButton.isEnabled = false
                     regButton.isEnabled = false
@@ -72,13 +88,10 @@ class LoginFragment : Fragment() {
         })
 
         loginViewModel.usernameToLogin.observe(viewLifecycleOwner, Observer {
-            if (it != null )
-            {
+            if (it != null) {
                 flag = true
 
-            }
-            else
-            {
+            } else {
                 return@Observer
             }
 
@@ -92,6 +105,14 @@ class LoginFragment : Fragment() {
                 addRecord(view)
 //                val intent = Intent(context, PicturesFragment::class.java)
 //                this.startActivity(intent)
+                username.visibility = View.GONE
+                password.visibility = View.GONE
+                loginButton.visibility = View.GONE
+                errorText.setTextColor(Color.argb(255,63,137,188))
+                errorText.setTextSize(TypedValue.COMPLEX_UNIT_SP,34F)
+                errorText.text = "Hello ${username.text.toString()}. Choose action!"
+                regButton.visibility = View.GONE
+                mListener!!.changeFragment(1)
             }
 
 
@@ -113,6 +134,15 @@ class LoginFragment : Fragment() {
             {
 //                val intent = Intent(context, PicturesFragment::class.java)
 //                this.startActivity(intent)
+                //mListener!!.changeFragment(1)
+                username.visibility = View.GONE
+                password.visibility = View.GONE
+                loginButton.visibility = View.GONE
+                errorText.setTextColor(Color.argb(255,63,137,188))
+                errorText.setTextSize(TypedValue.COMPLEX_UNIT_SP,34F)
+                errorText.text = "Hello ${username.text.toString()}. Choose action!"
+                regButton.visibility = View.GONE
+                mListener!!.changeFragment(1)
             }
         }
     }
@@ -127,7 +157,7 @@ class LoginFragment : Fragment() {
             val status =
                     databaseHandler.addUser(User(username.text.toString(), password.text.toString()))
             if (status > -1) {
-                Toast.makeText(view.context, "$username login success", Toast.LENGTH_LONG).show()
+                Toast.makeText(view.context, "${username.text.toString()} login success", Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(

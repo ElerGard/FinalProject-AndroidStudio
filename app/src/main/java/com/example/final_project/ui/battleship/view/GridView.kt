@@ -11,6 +11,7 @@ import android.view.View
 class GridView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet) {
   companion object
     {
+        // Я осознал как работает MVVM тема оч поздно, поэтому так
         var Red = 63;
         var Green = 137;
         var Blue = 188;

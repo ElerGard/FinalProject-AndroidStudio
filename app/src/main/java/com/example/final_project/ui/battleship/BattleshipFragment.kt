@@ -11,7 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.final_project.R
 import com.example.final_project.ui.battleship.view.BattleshipViewModel
+import com.example.final_project.ui.battleship.view.GridView.Companion.Blue
 import com.example.final_project.ui.battleship.view.GridView.Companion.Green
+import com.example.final_project.ui.battleship.view.GridView.Companion.Red
+import kotlin.random.Random
 
 
 class BattleshipFragment : Fragment() {
@@ -38,7 +41,12 @@ class BattleshipFragment : Fragment() {
 
         btn.setOnClickListener {
             Toast.makeText(context, "Color", Toast.LENGTH_SHORT).show()
-            Green = 255
+            val randomValues = List(3) { Random.nextInt(0, 100) }
+
+            Red = randomValues[0]
+            Green = randomValues[1]
+            Blue = randomValues[2]
+
             path = Path()
         }
 
