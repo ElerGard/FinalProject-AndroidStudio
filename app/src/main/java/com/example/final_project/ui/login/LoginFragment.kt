@@ -18,7 +18,7 @@ import com.example.final_project.R
 import com.example.final_project.adapter.RecyclerAdapter
 import com.example.final_project.data.Database
 import com.example.final_project.data.User
-import com.example.final_project.ui.home.PicturesFragment
+import com.example.final_project.ui.pictures.PicturesFragment
 
 class LoginFragment : Fragment() {
 
@@ -47,6 +47,7 @@ class LoginFragment : Fragment() {
         val loginButton = view.findViewById<Button>(R.id.login)
         val regButton = view.findViewById<Button>(R.id.registration)
         var errorText: TextView = view.findViewById<TextView>(R.id.errorText)
+        var flag: Boolean = false
 
 
         loginViewModel.dataValid.observe(viewLifecycleOwner, Observer {
@@ -62,6 +63,8 @@ class LoginFragment : Fragment() {
                 if (loginViewModel.error != null )
                 {
                     errorText.text = loginViewModel.error!!.value
+                    loginButton.isEnabled = false
+                    regButton.isEnabled = false
                 }
                 return@Observer
             }
@@ -71,8 +74,8 @@ class LoginFragment : Fragment() {
         loginViewModel.usernameToLogin.observe(viewLifecycleOwner, Observer {
             if (it != null )
             {
-                val intent = Intent(context, PicturesFragment::class.java)
-                this.startActivity(intent)
+                flag = true
+
             }
             else
             {
@@ -81,14 +84,17 @@ class LoginFragment : Fragment() {
 
         })
 
-        regButton.setOnClickListener {
 
-            if (db != null) {
-                if (db.getUser(username.text.toString(), password.text.toString()) == null)
-                    Toast.makeText(view.context, "No", Toast.LENGTH_LONG).show()
-                else
-                    Toast.makeText(view.context, "Yes", Toast.LENGTH_LONG).show()
+        regButton.setOnClickListener {
+            loginViewModel.login(username.text.toString(), password.text.toString())
+            if (loginViewModel._usernameToLogin.value != null)
+            {
+                addRecord(view)
+//                val intent = Intent(context, PicturesFragment::class.java)
+//                this.startActivity(intent)
             }
+
+
         }
 
         username.doAfterTextChanged {
@@ -103,6 +109,11 @@ class LoginFragment : Fragment() {
 
         loginButton.setOnClickListener {
             loginViewModel.login(username.text.toString(), password.text.toString())
+            if (loginViewModel._usernameToLogin.value != null)
+            {
+//                val intent = Intent(context, PicturesFragment::class.java)
+//                this.startActivity(intent)
+            }
         }
     }
 
@@ -116,7 +127,7 @@ class LoginFragment : Fragment() {
             val status =
                     databaseHandler.addUser(User(username.text.toString(), password.text.toString()))
             if (status > -1) {
-                Toast.makeText(view.context, "Record saved", Toast.LENGTH_LONG).show()
+                Toast.makeText(view.context, "$username login success", Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(

@@ -6,16 +6,14 @@ import androidx.lifecycle.ViewModel
 import com.example.final_project.data.Database
 import com.example.final_project.data.User
 
-class LoginViewModel(db: Database?) : ViewModel() {
-
-    private val db: Database? = null
+class LoginViewModel(private val db: Database?) : ViewModel() {
 
     private val _dataValid = MutableLiveData<Boolean>()
     val dataValid: LiveData<Boolean> = _dataValid
 
     var error: MutableLiveData<String>? = null
 
-    private var _usernameToLogin = MutableLiveData<String?>()
+    var _usernameToLogin = MutableLiveData<String?>()
     val usernameToLogin: LiveData<String?> = _usernameToLogin
 
     private val _users = MutableLiveData<MutableList<User>>().apply {
@@ -57,7 +55,11 @@ class LoginViewModel(db: Database?) : ViewModel() {
     {
         if (db != null) {
             if (db.getUser(username, password) == null)
-                _usernameToLogin.value = null
+            {
+                _usernameToLogin.value = String()
+                _usernameToLogin.value = ""
+            }
+
             else
             {
                 _usernameToLogin.value = String()

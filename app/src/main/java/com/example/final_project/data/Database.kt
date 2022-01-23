@@ -30,7 +30,7 @@ class Database(context: Context) :
                 + KEY_NAME + " TEXT PRIMARY KEY," + KEY_PASS + " TEXT"
                 + ")")
         db?.execSQL(CREATE_USERS_TABLE)
-        
+
 // For galery
 //        val CREATE_PICTURES_TABLE = ("CREATE TABLE " + TABLE_PICTURES + "("
 //                + KEY_NAME + " TEXT PRIMARY KEY," + KEY_PICTURE + " TEXT"
